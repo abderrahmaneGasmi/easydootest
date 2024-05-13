@@ -3,15 +3,25 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Svg from "../Svg";
 import { user } from "../../utils/Svgs";
+import { AuthContextType } from "../../context/authProvider";
+import { useAuth } from "../../hooks/useAuth";
+import { useRouter } from "next/router";
 
 export default function Header() {
+  const { checkAuth }: AuthContextType = useAuth();
   const [dropdown, setDropdown] = useState(false);
+  const router = useRouter();
   useEffect(() => {
+    if (!checkAuth()) {
+      router.push("/auth");
+    } else {
+    }
     document.addEventListener("click", (e) => {
       if (!(e.target as HTMLElement).classList.contains("dropdown")) {
         setDropdown(false);
       }
     });
+
     return () => {
       document.removeEventListener("click", (e) => {
         if (!(e.target as HTMLElement).classList.contains("dropdown")) {
