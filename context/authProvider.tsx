@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import React, { use, useEffect, useState } from "react";
 import Cookies from "universal-cookie";
+import { loginApi } from "../api/auth";
 interface childrenType {
   children: React.ReactNode;
 }
@@ -19,9 +20,15 @@ export default function AuthProvider({ children }: childrenType) {
   const router = useRouter();
   const cookies = new Cookies();
   const login = (userData: userData) => {
-    setUser(userData);
-    cookies.set("user", userData, { path: "/" });
-    router.push("/");
+    loginApi(userData)
+      .then((res) => {
+        setUser(userData);
+        cookies.set("user", userData, { path: "/" });
+        router.push("/");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const logout = () => {

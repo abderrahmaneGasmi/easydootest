@@ -16,20 +16,20 @@ export interface Product {
   };
 }
 
-export function getProduct({ limit }: { limit?: number }) {
+export async function getProduct({ limit }: { limit?: number }) {
   let endpoint = process.env.api || "https://fakestoreapi.com";
   return fetch(endpoint + "/products" + (limit ? "?limit=" + limit : ""))
     .then((res) => res.json())
     .then((data) => data as Product[]);
 }
-export function searchProduct(search: string) {
+export async function searchProduct(search: string) {
   return fetch(
     process.env.api || "https://fakestoreapi.com" + "/products?title=" + search
   )
     .then((res) => res.json())
     .then((data) => data as Product[]);
 }
-export function filterProducts(category: category) {
+export async function filterProducts(category: category) {
   console.log(process.env.api);
   return fetch(
     process.env.api ||
@@ -38,7 +38,7 @@ export function filterProducts(category: category) {
     .then((res) => res.json())
     .then((data) => data as Product[]);
 }
-export function addproduct(product: Partial<Product>) {
+export async function addproduct(product: Partial<Product>) {
   console.log("first");
   return fetch(process.env.api || "https://fakestoreapi.com" + "/products", {
     method: "POST",
@@ -50,7 +50,7 @@ export function addproduct(product: Partial<Product>) {
     .then((res) => res.json())
     .then((data) => console.log(data));
 }
-export function editproduct(product: Partial<Product>) {
+export async function editproduct(product: Partial<Product>) {
   return fetch(
     process.env.api || "https://fakestoreapi.com" + "/products/" + product.id,
     {
@@ -64,7 +64,7 @@ export function editproduct(product: Partial<Product>) {
     .then((res) => res.json())
     .then((data) => console.log(data));
 }
-export function deleteproduct(id: number) {
+export async function deleteproduct(id: number) {
   return fetch(
     process.env.api || "https://fakestoreapi.com" + "/products/" + id,
     {
@@ -74,7 +74,7 @@ export function deleteproduct(id: number) {
     .then((res) => res.json())
     .then((data) => console.log(data));
 }
-export function getProductById(id: string) {
+export async function getProductById(id: string) {
   let endpoint = process.env.api || "https://fakestoreapi.com";
 
   return fetch(endpoint + "/products/" + id)

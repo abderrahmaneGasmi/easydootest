@@ -19,9 +19,8 @@ export default function Home() {
     }
   }, []);
   const handleLogin = () => {
-    if (fromdata.username === "admin" && fromdata.password === "admin") {
+    if (fromdata.username && fromdata.password) {
       login(fromdata);
-      router.push("/");
     }
   };
   return (
