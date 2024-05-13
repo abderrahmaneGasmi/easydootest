@@ -152,9 +152,36 @@ export default function Products({ products }: { products: Product[] }) {
                       (type === "grid" ? styles.product : styles.productlist)
                     }
                   >
-                    <div className="animate-pulse flex flex-col gap-2 h-full">
-                      <div className="bg-gray-200 w-full h-96 rounded-lg"></div>
-                      <div className="bg-gray-200 w-3/4 h-16 rounded-lg"></div>
+                    <div
+                      // className=""
+                      className={
+                        "bg-gray-200 animate-pulse " +
+                        (type == "grid"
+                          ? styles.productimageskeleton
+                          : styles.productimagelist)
+                      }
+                    ></div>
+                    <div className="animate-pulse flex flex-col gap-2 h-full w-full">
+                      {type == "grid" ? (
+                        <>
+                          <div className="bg-gray-200 w-3/4 h-16 rounded-lg"></div>
+                          <p
+                            className={"bg-gray-200 w-3/4 h-16 rounded-lg"}
+                          ></p>
+                        </>
+                      ) : (
+                        <>
+                          <div className="bg-gray-200 w-40 h-8 rounded-lg"></div>
+                          <p
+                            className={"bg-gray-200 w-3/4 h-16 rounded-lg"}
+                          ></p>
+                          <p
+                            className={"bg-gray-200 w-full h-32 rounded-lg"}
+                          ></p>
+                        </>
+                      )}
+
+                      <div className="bg-gray-200 w-60 h-8 rounded-lg"></div>
                       <br />
                       <div className="flex w-full justify-between items-end pb-4">
                         <div className="bg-gray-200 w-4/6 h-8 rounded-lg"></div>
@@ -250,6 +277,19 @@ export default function Products({ products }: { products: Product[] }) {
             </>
           )}
         </div>
+        {productsrendered.length === 0 && (
+          <div className="flex flex-col gap-12 justify-center items-center h-full w-full">
+            <Image
+              src="/404.png"
+              alt="no products found"
+              width={500}
+              height={500}
+            />
+            <div className="text-6xl font-bold text-gray-500">
+              No products found
+            </div>
+          </div>
+        )}
         <Svg
           path={add.path}
           view={add.viewBox}

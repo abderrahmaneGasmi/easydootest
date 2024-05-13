@@ -45,3 +45,7 @@
   object-position: top;
   border-radius: 1rem;
 }
+.productimageskeleton {
+  height: 75rem;
+  width: 100%;
+}
