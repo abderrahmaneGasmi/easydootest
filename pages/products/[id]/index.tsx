@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import {
   Product,
   category,
+  filterProducts,
   getProduct,
   getProductById,
 } from "../../../api/products";
@@ -11,14 +12,21 @@ import Image from "next/image";
 import Svg from "../../../components/Svg";
 import { star } from "../../../utils/Svgs";
 import ProductItem from "../../../components/products/Product";
-export default function ProductPage({
-  product,
-  related,
-}: {
-  product: Product;
-  related: Product[];
-}) {
+import Link from "next/link";
+export default function ProductPage({ product }: { product: Product }) {
   const router = useRouter();
+  const [related, setRelated] = useState([] as Product[]);
+  React.useEffect(() => {
+    if (!product.id) return;
+    filterProducts(product.category).then((data) => {
+      setRelated(data);
+    });
+  }, [product]);
+  // If the router is not ready yet (i.e., getServerSideProps is not returned)
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
+
   const categoryclass = (category: category) => {
     switch (category) {
       case "electronics":
@@ -33,10 +41,29 @@ export default function ProductPage({
         return "bg-gray-500 text-white";
     }
   };
+  if (!product.id)
+    return (
+      <div className="flex flex-col gap-12 justify-center items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <Image
+          src="/404.png"
+          alt="no products found"
+          width={500}
+          height={500}
+        />
+        <div className="text-6xl font-bold text-gray-500">
+          No products found
+        </div>
+        <div className="bg-blue-500 text-white py-2 px-4 rounded-md text-2xl font-bold">
+          <Link href="/products">Go back to home</Link>
+        </div>
+      </div>
+    );
   return (
     <div className="flex flex-col p-4 ">
       <div className="flex flex-row items-center gap-x-2">
-        <div className="text-2xl text-gray-400 font-bold">Home</div>
+        <div className="text-2xl text-gray-400 font-bold">
+          <Link href="/products">Home</Link>
+        </div>
         <div className="text-2xl text-gray-400 font-bold">/</div>
         <div className="text-2xl text-gray-400 font-bold">
           Product {router.query.id}
@@ -111,12 +138,19 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   if (!context.params) return { props: { product: {} } };
   console.log(context.params.id);
   const id = context.params.id as string;
-  const product = await getProductById(id);
-  const related = await getProduct({ limit: 5 });
-  return {
-    props: {
-      product: product,
-      related: related,
-    },
-  };
+  try {
+    const product = await getProductById(id);
+    return {
+      props: {
+        product: product,
+      },
+    };
+  } catch (e) {
+    console.log(e);
+    return {
+      props: {
+        product: {},
+      },
+    };
+  }
 }

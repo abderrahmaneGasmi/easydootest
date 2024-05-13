@@ -2,6 +2,7 @@ import React from "react";
 import { Product, category } from "../../api/products";
 import styles from "./product.module.css";
 import Image from "next/image";
+import Link from "next/link";
 export default function ProductItem({ product }: { product: Product }) {
   const categoryclass = (category: category) => {
     switch (category) {
@@ -25,18 +26,25 @@ export default function ProductItem({ product }: { product: Product }) {
         " " +
         styles.product
       }
+      style={{
+        height: "fit-content",
+      }}
     >
-      <Image
-        src={product.image}
-        alt={product.title}
-        width={250}
-        height={100}
-        className={"rounded-lg object-cover " + styles.productimage}
-      />
+      <Link href={"/products/" + product.id}>
+        <Image
+          src={product.image}
+          alt={product.title}
+          width={250}
+          height={100}
+          className={"rounded-lg object-cover " + styles.productimage}
+        />
+      </Link>
       <div className="flex flex-col flex-grow gap-2 h-full">
         <div className="font-bold text-2xl">
-          {product.title.slice(0, 60) +
-            (product.title.length > 60 ? "..." : "")}
+          <Link href={"/products/" + product.id}>
+            {product.title.slice(0, 60) +
+              (product.title.length > 60 ? "..." : "")}
+          </Link>
         </div>
         <p
           className={

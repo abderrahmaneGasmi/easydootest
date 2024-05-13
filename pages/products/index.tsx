@@ -23,6 +23,7 @@ import {
   search,
   trash,
 } from "../../utils/Svgs";
+import Link from "next/link";
 export default function Products({ products }: { products: Product[] }) {
   const finalproducts = React.useRef(products);
   const [productsrendered, setProductsrendered] = useState(products);
@@ -300,24 +301,28 @@ export default function Products({ products }: { products: Product[] }) {
                       (type === "grid" ? styles.product : styles.productlist)
                     }
                   >
-                    <Image
-                      src={product.image}
-                      alt={product.title}
-                      width={250}
-                      height={100}
-                      className={
-                        "rounded-lg object-cover " +
-                        (type == "grid"
-                          ? styles.productimage
-                          : styles.productimagelist)
-                      }
-                    />
+                    <Link href={"/products/" + product.id}>
+                      <Image
+                        src={product.image}
+                        alt={product.title}
+                        width={250}
+                        height={100}
+                        className={
+                          "rounded-lg object-cover " +
+                          (type == "grid"
+                            ? styles.productimage
+                            : styles.productimagelist)
+                        }
+                      />
+                    </Link>
                     <div className="flex flex-col flex-grow gap-2 h-full">
                       {type == "grid" ? (
                         <>
                           <div className="font-bold text-2xl">
-                            {product.title.slice(0, 60) +
-                              (product.title.length > 60 ? "..." : "")}
+                            <Link href={"/products/" + product.id}>
+                              {product.title.slice(0, 60) +
+                                (product.title.length > 60 ? "..." : "")}
+                            </Link>
                           </div>
                           <p
                             className={
