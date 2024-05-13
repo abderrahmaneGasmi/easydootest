@@ -10,7 +10,7 @@ export interface AuthContextType {
   checkAuth: () => boolean;
 }
 type userData = {
-  email: string;
+  username: string;
   password: string;
 };
 export const AuthContext = React.createContext<AuthContextType>(null!);

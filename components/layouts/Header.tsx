@@ -8,7 +8,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useRouter } from "next/router";
 
 export default function Header() {
-  const { checkAuth }: AuthContextType = useAuth();
+  const { checkAuth, logout }: AuthContextType = useAuth();
   const [dropdown, setDropdown] = useState(false);
   const router = useRouter();
   useEffect(() => {
@@ -53,7 +53,13 @@ export default function Header() {
           <div className="absolute right-0 top-100 left-0 z-50 dropdown">
             <div className="bg-white p-2 rounded-md shadow-md hover:bg-gray-100 cursor-pointer">
               <div className="flex flex-col gap-2">
-                <div className="text-2xl font-bold text-gray-700 dropdown">
+                <div
+                  className="text-2xl font-bold text-gray-700 dropdown"
+                  onClick={() => {
+                    logout();
+                    setDropdown(false);
+                  }}
+                >
                   Logout
                 </div>
               </div>

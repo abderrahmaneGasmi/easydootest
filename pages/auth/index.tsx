@@ -1,8 +1,29 @@
 import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
+import { AuthContextType } from "../../context/authProvider";
+import { useAuth } from "../../hooks/useAuth";
+import { useRouter } from "next/router";
 export default function Home() {
   // check if localStorage auth token exists
   // if not, redirect to login page
-
+  const [fromdata, setFromdata] = useState({
+    username: "",
+    password: "",
+  });
+  const { checkAuth, login }: AuthContextType = useAuth();
+  const router = useRouter();
+  useEffect(() => {
+    if (checkAuth()) {
+      router.push("/");
+    } else {
+    }
+  }, []);
+  const handleLogin = () => {
+    if (fromdata.username === "admin" && fromdata.password === "admin") {
+      login(fromdata);
+      router.push("/");
+    }
+  };
   return (
     <div
       className="w-full h-screen flex flex-col justify-center items-center gap-4"
@@ -30,6 +51,10 @@ export default function Home() {
             type="text"
             placeholder="Nom d'utilisateur"
             className="w-full h-16 border border-gray-300 rounded-md px-4 text-xl"
+            onChange={(e) =>
+              setFromdata({ ...fromdata, username: e.target.value })
+            }
+            value={fromdata.username}
           />
           <label className="text-gray-600 text-xl font-bold ">
             {`Mot de passe`}
@@ -38,8 +63,15 @@ export default function Home() {
             type="password"
             placeholder="Mot de passe"
             className="w-full h-16 border border-gray-300 rounded-md px-4 text-xl"
+            onChange={(e) =>
+              setFromdata({ ...fromdata, password: e.target.value })
+            }
+            value={fromdata.password}
           />
-          <button className="w-full bg-indigo-600 text-white rounded-md text-2xl font-bold py-4">
+          <button
+            className="w-full bg-indigo-600 text-white rounded-md text-2xl font-bold py-4"
+            onClick={handleLogin}
+          >
             Login
           </button>
           <br />
