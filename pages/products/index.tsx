@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Product,
+  addproduct,
   category,
   filterProducts,
   getProduct,
@@ -16,6 +17,7 @@ import {
   gridicon,
   image,
   listicon,
+  refresh,
   search,
   trash,
 } from "../../utils/Svgs";
@@ -26,8 +28,10 @@ export default function Products({ products }: { products: Product[] }) {
   const [searchinput, setsearchinput] = useState("");
   const [filter, setFilter] = useState("all" as "all" | category);
   const [loading, setLoading] = useState(true);
+  const [requestloading, setRequestloading] = useState(false);
   const [newproject, setNewproject] = useState({
     show: false,
+    type: "add" as "add" | "edit",
     title: "",
     price: 0,
     category: "electronics" as category,
@@ -86,6 +90,38 @@ export default function Products({ products }: { products: Product[] }) {
         return "bg-gray-500 text-white";
     }
   };
+  const addproductHandler = () => {
+    if (requestloading) return;
+    if (
+      newproject.title === "" ||
+      newproject.description === "" ||
+      newproject.price === 0
+    ) {
+      alert("please fill all fields");
+      return;
+    }
+    setRequestloading(true);
+    addproduct({
+      category: newproject.category,
+      description: newproject.description,
+      image: newproject.image,
+      price: newproject.price,
+      title: newproject.title,
+    }).then(() => {
+      setTimeout(() => {
+        setNewproject({
+          show: false,
+          type: "add",
+          title: "",
+          price: 0,
+          category: "electronics",
+          description: "",
+          image: "",
+        });
+        setRequestloading(false);
+      }, 500);
+    });
+  };
   return (
     <main className={styles.grid}>
       <div className="flex flex-col gap-4 p-4 relative">
@@ -100,7 +136,13 @@ export default function Products({ products }: { products: Product[] }) {
                   : "bg-blue-500 text-white "
               }
                 `}
-              click={() => setType("grid")}
+              click={() => {
+                setType("grid");
+                setLoading(true);
+                setTimeout(() => {
+                  setLoading(false);
+                }, 500);
+              }}
             />
             <Svg
               path={listicon.path}
@@ -114,6 +156,9 @@ export default function Products({ products }: { products: Product[] }) {
               click={() => {
                 setType("list");
                 setLoading(true);
+                setTimeout(() => {
+                  setLoading(false);
+                }, 500);
               }}
             />
           </div>{" "}
@@ -310,90 +355,122 @@ export default function Products({ products }: { products: Product[] }) {
           path={add.path}
           view={add.viewBox}
           classlist="cursor-pointer fill-current text-white fixed bottom-4 right-4 w-16 h-16 bg-blue-600 p-4 rounded-full hover:bg-blue-800"
+          click={() =>
+            setNewproject({
+              category: "electronics",
+              description: "",
+              image: "",
+              price: 0,
+              title: "",
+              type: "add",
+
+              show: true,
+            })
+          }
         />
       </div>
-      <div className="fixed inset-0 z-50">
-        <div
-          className="absolute bg-white w-2/6 rounded-lg top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col overflow-auto"
-          style={{
-            height: "90%",
-          }}
-        >
-          <div className="flex w-full justify-between items-center h-20 border-b-2 border-gray-200">
-            <div className="text-2xl font-bold text-gray-800 p-4">
-              Add Product
-            </div>
-            <Svg
-              path={close.path}
-              view={close.viewBox}
-              classlist="cursor-pointer fill-current text-red-800 w-12 h-12 p-2 pr-6 rounded-lg "
-              click={() => setNewproject({ ...newproject, show: false })}
-            />
-          </div>
-          <div className="flex flex-col p-4 w-full h-full flex-grow">
-            <div className="w-full h-full bg-gray-200 border-4 border-indigo-200 rounded-lg border-dashed flex flex-col items-center justify-center">
+      {newproject.show && (
+        <div className="fixed inset-0 z-50">
+          <div
+            className="absolute bg-white w-2/6 rounded-lg top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col overflow-auto"
+            style={{
+              height: "90%",
+            }}
+          >
+            <div className="flex w-full justify-between items-center h-20 border-b-2 border-gray-200">
+              <div className="text-2xl font-bold text-gray-800 p-4">
+                {newproject.type === "add" ? "Add " : "Edit "} Product
+              </div>
               <Svg
-                path={image.path}
-                view={image.viewBox}
-                classlist="w-16 h-16 fill-current text-indigo-500"
+                path={close.path}
+                view={close.viewBox}
+                classlist="cursor-pointer fill-current text-red-800 w-12 h-12 p-2 pr-6 rounded-lg "
+                click={() => setNewproject({ ...newproject, show: false })}
               />
-              <p className="text-indigo-500 text-2xl font-bold">
-                Drag & drop image or click to upload
-              </p>
+            </div>
+            <div className="flex flex-col p-4 w-full h-full flex-grow">
+              <div className="w-full h-full bg-gray-200 border-4 border-indigo-200 rounded-lg border-dashed flex flex-col items-center justify-center">
+                <Svg
+                  path={image.path}
+                  view={image.viewBox}
+                  classlist="w-16 h-16 fill-current text-indigo-500"
+                />
+                <p className="text-indigo-500 text-2xl font-bold">
+                  Drag & drop image or click to upload
+                </p>
+              </div>
+            </div>
+            <div className="flex h-full flex-col mx-4 mr-6 gap-2">
+              <div className="text-2xl font-bold text-gray-800 p-2">Title</div>
+              <input
+                type="text"
+                className="bg-gray-100 rounded-lg m-2 text-xl w-full p-2 border-2 border-gray-200"
+                value={newproject.title}
+                onChange={(e) =>
+                  setNewproject({ ...newproject, title: e.target.value })
+                }
+              />
+              <div className="text-2xl font-bold text-gray-800 p-2">
+                Description
+              </div>
+              <textarea
+                className="bg-gray-100 rounded-lg m-2 text-xl w-full p-2 border-2 border-gray-200 resize-none"
+                value={newproject.description}
+                onChange={(e) =>
+                  setNewproject({ ...newproject, description: e.target.value })
+                }
+              ></textarea>
+              <div className="text-2xl font-bold text-gray-800 p-2">Price</div>
+              <input
+                type="number"
+                className="bg-gray-100 rounded-lg m-2 text-xl w-full p-2 border-2 border-gray-200"
+                value={newproject.price}
+                onChange={(e) =>
+                  setNewproject({ ...newproject, price: +e.target.value })
+                }
+              />
+              <div className="text-2xl font-bold text-gray-800 p-2">
+                Category
+              </div>
+              <select
+                className="bg-gray-100 rounded-lg m-2 text-xl w-full p-2 border-2 border-gray-200"
+                value={newproject.category}
+                onChange={(e) =>
+                  setNewproject({
+                    ...newproject,
+                    category: e.target.value as category,
+                  })
+                }
+              >
+                <option value="electronics">Electronics</option>
+                <option value="jewelery">Jewelery</option>
+                <option value="men's clothing">{`men's clothing`}</option>
+                <option value="women's clothing">{`women's clothing`}</option>
+              </select>
+              <div
+                className="bg-indigo-600 text-white px-8 mb-8 mt-2  h-11 flex self-end items-center rounded-lg text-xl text-center cursor-pointer"
+                onClick={addproductHandler}
+              >
+                {requestloading ? (
+                  <Svg
+                    path={refresh.path}
+                    view={refresh.viewBox}
+                    classlist="w-8 h-8 animate-spin text-white fill-current"
+                  />
+                ) : newproject.type === "add" ? (
+                  "Add product"
+                ) : (
+                  "Edit product"
+                )}
+              </div>
             </div>
           </div>
-          <div className="flex h-full flex-col mx-4 mr-6 gap-2">
-            <div className="text-2xl font-bold text-gray-800 p-2">Title</div>
-            <input
-              type="text"
-              className="bg-gray-100 rounded-lg m-2 text-xl w-full p-2 border-2 border-gray-200"
-              value={newproject.title}
-              onChange={(e) =>
-                setNewproject({ ...newproject, title: e.target.value })
-              }
-            />
-            <div className="text-2xl font-bold text-gray-800 p-2">
-              Description
-            </div>
-            <textarea
-              className="bg-gray-100 rounded-lg m-2 text-xl w-full p-2 border-2 border-gray-200 resize-none"
-              value={newproject.description}
-              onChange={(e) =>
-                setNewproject({ ...newproject, description: e.target.value })
-              }
-            ></textarea>
-            <div className="text-2xl font-bold text-gray-800 p-2">Price</div>
-            <input
-              type="number"
-              className="bg-gray-100 rounded-lg m-2 text-xl w-full p-2 border-2 border-gray-200"
-              value={newproject.price}
-              onChange={(e) =>
-                setNewproject({ ...newproject, price: +e.target.value })
-              }
-            />
-            <div className="text-2xl font-bold text-gray-800 p-2">Category</div>
-            <select
-              className="bg-gray-100 rounded-lg m-2 text-xl w-full p-2 border-2 border-gray-200"
-              value={newproject.category}
-              onChange={(e) =>
-                setNewproject({
-                  ...newproject,
-                  category: e.target.value as category,
-                })
-              }
-            >
-              <option value="electronics">Electronics</option>
-              <option value="jewelery">Jewelery</option>
-              <option value="men's clothing">{`men's clothing`}</option>
-              <option value="women's clothing">{`women's clothing`}</option>
-            </select>
-            <div className="bg-indigo-600 text-white px-8 mb-8 mt-2  h-11 flex self-end items-center rounded-lg text-xl text-center cursor-pointer">
-              Add product
-            </div>
-          </div>
+          <div
+            className="bg-gray-900 bg-opacity-80 w-full h-full z-50"
+            onClick={() => setNewproject({ ...newproject, show: false })}
+          ></div>
         </div>
-        <div className="bg-gray-900 bg-opacity-80 w-full h-full z-50"></div>
-      </div>
+      )}
     </main>
   );
 }

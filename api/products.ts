@@ -34,3 +34,15 @@ export function filterProducts(category: category) {
     .then((res) => res.json())
     .then((data) => data as Product[]);
 }
+export function addproduct(product: Partial<Product>) {
+  console.log("first");
+  return fetch(process.env.api || "https://fakestoreapi.com" + "/products", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(product),
+  })
+    .then((res) => res.json())
+    .then((data) => console.log(data));
+}
