@@ -46,3 +46,17 @@ export function addproduct(product: Partial<Product>) {
     .then((res) => res.json())
     .then((data) => console.log(data));
 }
+export function editproduct(product: Partial<Product>) {
+  return fetch(
+    process.env.api || "https://fakestoreapi.com" + "/products/" + product.id,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(product),
+    }
+  )
+    .then((res) => res.json())
+    .then((data) => console.log(data));
+}

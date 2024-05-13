@@ -4,6 +4,7 @@ import {
   Product,
   addproduct,
   category,
+  editproduct,
   filterProducts,
   getProduct,
   searchProduct,
@@ -37,7 +38,8 @@ export default function Products({ products }: { products: Product[] }) {
     category: "electronics" as category,
     description: "",
     image: "",
-  });
+    id: 0,
+  } as Partial<Product> & { show: boolean; type: "add" | "edit" });
   useEffect(() => {
     if (searchinput.length < 3) {
       setProductsrendered(finalproducts.current);
@@ -101,12 +103,36 @@ export default function Products({ products }: { products: Product[] }) {
       return;
     }
     setRequestloading(true);
+    if (newproject.type === "edit") return editproductHandler();
     addproduct({
       category: newproject.category,
       description: newproject.description,
       image: newproject.image,
       price: newproject.price,
       title: newproject.title,
+    }).then(() => {
+      setTimeout(() => {
+        setNewproject({
+          show: false,
+          type: "add",
+          title: "",
+          price: 0,
+          category: "electronics",
+          description: "",
+          image: "",
+        });
+        setRequestloading(false);
+      }, 500);
+    });
+  };
+  const editproductHandler = () => {
+    editproduct({
+      category: newproject.category,
+      description: newproject.description,
+      image: newproject.image,
+      price: newproject.price,
+      title: newproject.title,
+      id: newproject.id,
     }).then(() => {
       setTimeout(() => {
         setNewproject({
@@ -321,7 +347,18 @@ export default function Products({ products }: { products: Product[] }) {
                       <div className="flex w-full flex-grow items-end pb-4">
                         <div
                           className="bg-blue-600 text-white p-2 rounded-lg w-32 text-xl flex-grow text-center cursor-pointer"
-                          onClick={() => alert("add to cart")}
+                          onClick={() => {
+                            setNewproject({
+                              category: product.category,
+                              description: product.description,
+                              image: product.image,
+                              price: product.price,
+                              title: product.title,
+                              type: "edit",
+                              id: product.id,
+                              show: true,
+                            });
+                          }}
                         >
                           Modify product
                         </div>
