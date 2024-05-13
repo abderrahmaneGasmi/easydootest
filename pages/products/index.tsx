@@ -1,12 +1,41 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Product, category, getProduct } from "../../api/products";
+import {
+  Product,
+  category,
+  getProduct,
+  searchProduct,
+} from "../../api/products";
 import Image from "next/image";
 import styles from "./product.module.css";
 import Svg from "../../components/Svg";
 import { add, gridicon, listicon, search, trash } from "../../utils/Svgs";
 export default function Products({ products }: { products: Product[] }) {
+  const finalproducts = React.useRef(products);
+  const [productsrendered, setProductsrendered] = useState(products);
   const [type, setType] = useState("grid" as "grid" | "list");
+  const [searchinput, setsearchinput] = useState("");
+
+  useEffect(() => {
+    if (searchinput.length < 3) {
+      setProductsrendered(finalproducts.current);
+      return;
+    }
+    const search = setTimeout(() => {
+      // No ENDPOINT FOR SEARCHING PRODUCTS
+      // searchProduct(searchinput).then(updateProducts);
+      searchproducts(searchinput);
+    }, 500);
+    const searchproducts = (search: string) => {
+      let temp = finalproducts.current.filter((product) => {
+        return product.title.toLowerCase().includes(search.toLowerCase());
+      });
+      console.log(temp);
+      setProductsrendered(temp);
+    };
+    return () => clearTimeout(search);
+  }, [searchinput]);
+
   const categoryclass = (category: category) => {
     switch (category) {
       case "electronics":
@@ -56,6 +85,8 @@ export default function Products({ products }: { products: Product[] }) {
                 type="text"
                 className="outline-none bg-transparent w-full text-xl"
                 placeholder="search for products"
+                value={searchinput}
+                onChange={(e) => setsearchinput(e.target.value)}
               />
               <Svg
                 path={search.path}
@@ -76,7 +107,7 @@ export default function Products({ products }: { products: Product[] }) {
         <div
           className={type === "grid" ? styles.products : styles.productslist}
         >
-          {products.map((product) => {
+          {productsrendered.map((product) => {
             return (
               <div
                 key={product.id}
