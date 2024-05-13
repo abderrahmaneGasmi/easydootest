@@ -17,33 +17,42 @@ export default function Products({ products }: { products: Product[] }) {
   const [type, setType] = useState("grid" as "grid" | "list");
   const [searchinput, setsearchinput] = useState("");
   const [filter, setFilter] = useState("all" as "all" | category);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     if (searchinput.length < 3) {
       setProductsrendered(finalproducts.current);
+      setLoading(false);
+
       return;
     }
+    setLoading(true);
     const search = setTimeout(() => {
       // No ENDPOINT FOR SEARCHING PRODUCTS
       // searchProduct(searchinput).then((data) => setProductsrendered(data));
 
       searchproducts(searchinput);
-    }, 500);
+    }, 1000);
     const searchproducts = (search: string) => {
       let temp = finalproducts.current.filter((product) => {
         return product.title.toLowerCase().includes(search.toLowerCase());
       });
-      console.log(temp);
       setProductsrendered(temp);
+      setLoading(false);
     };
     return () => clearTimeout(search);
   }, [searchinput]);
   useEffect(() => {
+    setLoading(true);
     if (filter === "all") {
       setProductsrendered(finalproducts.current);
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
       return;
     }
     filterProducts(filter).then((data) => {
       setProductsrendered(data);
+      setLoading(false);
     });
   }, [filter]);
 
@@ -86,7 +95,10 @@ export default function Products({ products }: { products: Product[] }) {
                   : "bg-blue-500 text-white "
               }
                 `}
-              click={() => setType("list")}
+              click={() => {
+                setType("list");
+                setLoading(true);
+              }}
             />
           </div>{" "}
           <div className="flex">
@@ -97,7 +109,9 @@ export default function Products({ products }: { products: Product[] }) {
                 className="outline-none bg-transparent w-full text-xl"
                 placeholder="search for products"
                 value={searchinput}
-                onChange={(e) => setsearchinput(e.target.value)}
+                onChange={(e) => {
+                  setsearchinput(e.target.value);
+                }}
               />
               <Svg
                 path={search.path}
@@ -126,84 +140,115 @@ export default function Products({ products }: { products: Product[] }) {
         <div
           className={type === "grid" ? styles.products : styles.productslist}
         >
-          {productsrendered.map((product) => {
-            return (
-              <div
-                key={product.id}
-                className={
-                  "border-2 border-gray-200 p-4 rounded-lg shadow-lg relative" +
-                  " " +
-                  (type === "grid" ? styles.product : styles.productlist)
-                }
-              >
-                <Image
-                  src={product.image}
-                  alt={product.title}
-                  width={250}
-                  height={100}
-                  className={
-                    "rounded-lg object-cover " +
-                    (type == "grid"
-                      ? styles.productimage
-                      : styles.productimagelist)
-                  }
-                />
-                <div className="flex flex-col flex-grow gap-2 h-full">
-                  {type == "grid" ? (
-                    <>
-                      <div className="font-bold text-2xl">
-                        {product.title.slice(0, 60) +
-                          (product.title.length > 60 ? "..." : "")}
+          {loading ? (
+            <>
+              {Array.from({ length: 10 }).map((_, index) => {
+                return (
+                  <div
+                    key={index}
+                    className={
+                      "border-2 border-gray-200 p-4 rounded-lg shadow-lg relative" +
+                      " " +
+                      (type === "grid" ? styles.product : styles.productlist)
+                    }
+                  >
+                    <div className="animate-pulse flex flex-col gap-2 h-full">
+                      <div className="bg-gray-200 w-full h-96 rounded-lg"></div>
+                      <div className="bg-gray-200 w-3/4 h-16 rounded-lg"></div>
+                      <br />
+                      <div className="flex w-full justify-between items-end pb-4">
+                        <div className="bg-gray-200 w-4/6 h-8 rounded-lg"></div>
+                        <div className="bg-gray-200 w-1/6 h-8 rounded-lg"></div>
                       </div>
-                      <p
-                        className={
-                          categoryclass(product.category) +
-                          " rounded-full px-4 py-1 self-baseline font-bold absolute top-4 right-4 text-lg"
-                        }
-                      >
-                        {product.category}
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <p
-                        className={
-                          categoryclass(product.category) +
-                          " rounded-full px-4 py-1 self-baseline font-bold"
-                        }
-                      >
-                        {product.category}
-                      </p>
-                      <div className="font-bold text-4xl">{product.title}</div>
-                    </>
-                  )}
-
-                  <p className="text-blue-600 font-bold text-xl">
-                    {product.price} DA
-                  </p>
-                  {type == "list" && (
-                    <p className="text-gray-600 font-bold text-xl">
-                      {product.description}
-                    </p>
-                  )}
-
-                  <div className="flex w-full flex-grow items-end pb-4">
-                    <div
-                      className="bg-blue-600 text-white p-2 rounded-lg w-32 text-xl flex-grow text-center cursor-pointer"
-                      onClick={() => alert("add to cart")}
-                    >
-                      Modify product
                     </div>
-                    <Svg
-                      path={trash.path}
-                      view={trash.viewBox}
-                      classlist="cursor-pointer fill-current text-red-800 w-10 h-10 p-2 rounded-lg "
-                    />
                   </div>
-                </div>
-              </div>
-            );
-          })}
+                );
+              })}
+            </>
+          ) : (
+            <>
+              {productsrendered.map((product) => {
+                return (
+                  <div
+                    key={product.id}
+                    className={
+                      "border-2 border-gray-200 p-4 rounded-lg shadow-lg relative" +
+                      " " +
+                      (type === "grid" ? styles.product : styles.productlist)
+                    }
+                  >
+                    <Image
+                      src={product.image}
+                      alt={product.title}
+                      width={250}
+                      height={100}
+                      className={
+                        "rounded-lg object-cover " +
+                        (type == "grid"
+                          ? styles.productimage
+                          : styles.productimagelist)
+                      }
+                    />
+                    <div className="flex flex-col flex-grow gap-2 h-full">
+                      {type == "grid" ? (
+                        <>
+                          <div className="font-bold text-2xl">
+                            {product.title.slice(0, 60) +
+                              (product.title.length > 60 ? "..." : "")}
+                          </div>
+                          <p
+                            className={
+                              categoryclass(product.category) +
+                              " rounded-full px-4 py-1 self-baseline font-bold absolute top-4 right-4 text-lg"
+                            }
+                          >
+                            {product.category}
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <p
+                            className={
+                              categoryclass(product.category) +
+                              " rounded-full px-4 py-1 self-baseline font-bold"
+                            }
+                          >
+                            {product.category}
+                          </p>
+                          <div className="font-bold text-4xl">
+                            {product.title}
+                          </div>
+                        </>
+                      )}
+
+                      <p className="text-blue-600 font-bold text-xl">
+                        {product.price} DA
+                      </p>
+                      {type == "list" && (
+                        <p className="text-gray-600 font-bold text-xl">
+                          {product.description}
+                        </p>
+                      )}
+
+                      <div className="flex w-full flex-grow items-end pb-4">
+                        <div
+                          className="bg-blue-600 text-white p-2 rounded-lg w-32 text-xl flex-grow text-center cursor-pointer"
+                          onClick={() => alert("add to cart")}
+                        >
+                          Modify product
+                        </div>
+                        <Svg
+                          path={trash.path}
+                          view={trash.viewBox}
+                          classlist="cursor-pointer fill-current text-red-800 w-10 h-10 p-2 rounded-lg "
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </>
+          )}
         </div>
         <Svg
           path={add.path}
