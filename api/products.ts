@@ -60,3 +60,13 @@ export function editproduct(product: Partial<Product>) {
     .then((res) => res.json())
     .then((data) => console.log(data));
 }
+export function deleteproduct(id: number) {
+  return fetch(
+    process.env.api || "https://fakestoreapi.com" + "/products/" + id,
+    {
+      method: "DELETE",
+    }
+  )
+    .then((res) => res.json())
+    .then((data) => console.log(data));
+}

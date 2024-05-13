@@ -4,6 +4,7 @@ import {
   Product,
   addproduct,
   category,
+  deleteproduct,
   editproduct,
   filterProducts,
   getProduct,
@@ -146,6 +147,18 @@ export default function Products({ products }: { products: Product[] }) {
         });
         setRequestloading(false);
       }, 500);
+    });
+  };
+  const deleteproductHandler = (id: number) => {
+    if (requestloading) return;
+    setRequestloading(true);
+    deleteproduct(id).then(() => {
+      setProductsrendered((prev) =>
+        prev.filter((product) => product.id !== id)
+      );
+      finalproducts.current = finalproducts.current.filter(
+        (product) => product.id !== id
+      );
     });
   };
   return (
@@ -366,6 +379,7 @@ export default function Products({ products }: { products: Product[] }) {
                           path={trash.path}
                           view={trash.viewBox}
                           classlist="cursor-pointer fill-current text-red-800 w-10 h-10 p-2 rounded-lg "
+                          click={() => deleteproductHandler(product.id)}
                         />
                       </div>
                     </div>
