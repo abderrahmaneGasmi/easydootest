@@ -1,10 +1,12 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import { Product, category, getProduct } from "../../api/products";
 import Image from "next/image";
 import styles from "./product.module.css";
 import Svg from "../../components/Svg";
 import { add, gridicon, listicon, search, trash } from "../../utils/Svgs";
 export default function Products({ products }: { products: Product[] }) {
+  const [type, setType] = useState("grid" as "grid" | "list");
   const categoryclass = (category: category) => {
     switch (category) {
       case "electronics":
@@ -27,12 +29,24 @@ export default function Products({ products }: { products: Product[] }) {
             <Svg
               path={gridicon.path}
               view={gridicon.viewBox}
-              classlist="cursor-pointer fill-current text-gray-800 w-10 h-10 bg-gray-300 p-2 rounded-lg hover:bg-indigo-200 hover:text-gray-800"
+              classlist={`cursor-pointer fill-current  w-10 h-10  p-2 rounded-lg  ${
+                type !== "grid"
+                  ? "bg-gray-300 text-gray-800 hover:bg-indigo-200 hover:text-gray-800"
+                  : "bg-blue-500 text-white "
+              }
+                `}
+              click={() => setType("grid")}
             />
             <Svg
               path={listicon.path}
               view={listicon.viewBox}
-              classlist="cursor-pointer fill-current text-gray-800 w-10 h-10 bg-gray-300 p-2 rounded-lg hover:bg-indigo-200 hover:text-gray-800"
+              classlist={`cursor-pointer fill-current  w-10 h-10  p-2 rounded-lg  ${
+                type !== "list"
+                  ? "bg-gray-300 text-gray-800 hover:bg-indigo-200 hover:text-gray-800"
+                  : "bg-blue-500 text-white "
+              }
+                `}
+              click={() => setType("list")}
             />
           </div>{" "}
           <div className="flex">
@@ -59,7 +73,9 @@ export default function Products({ products }: { products: Product[] }) {
             </select>
           </div>
         </div>
-        <div className={styles.products}>
+        <div
+          className={type === "grid" ? styles.products : styles.productslist}
+        >
           {products.map((product) => {
             return (
               <div
@@ -67,7 +83,7 @@ export default function Products({ products }: { products: Product[] }) {
                 className={
                   "border-2 border-gray-200 p-4 rounded-lg shadow-lg relative" +
                   " " +
-                  styles.product
+                  (type === "grid" ? styles.product : styles.productlist)
                 }
               >
                 <Image
@@ -75,35 +91,65 @@ export default function Products({ products }: { products: Product[] }) {
                   alt={product.title}
                   width={250}
                   height={100}
-                  className={"rounded-lg object-cover " + styles.productimage}
-                />
-                <div className="font-bold text-2xl">
-                  {product.title.slice(0, 60) +
-                    (product.title.length > 60 ? "..." : "")}
-                </div>
-                <p className="text-blue-600 font-bold text-xl">
-                  {product.price} DA
-                </p>
-                <p
                   className={
-                    categoryclass(product.category) +
-                    " rounded-full px-4 py-1 self-baseline font-bold absolute top-4 right-4 text-lg"
+                    "rounded-lg object-cover " +
+                    (type == "grid"
+                      ? styles.productimage
+                      : styles.productimagelist)
                   }
-                >
-                  {product.category}
-                </p>
-                <div className="flex w-full flex-grow items-end pb-4">
-                  <div
-                    className="bg-blue-600 text-white p-2 rounded-lg w-32 text-xl flex-grow text-center cursor-pointer"
-                    onClick={() => alert("add to cart")}
-                  >
-                    Modify product
+                />
+                <div className="flex flex-col flex-grow gap-2 h-full">
+                  {type == "grid" ? (
+                    <>
+                      <div className="font-bold text-2xl">
+                        {product.title.slice(0, 60) +
+                          (product.title.length > 60 ? "..." : "")}
+                      </div>
+                      <p
+                        className={
+                          categoryclass(product.category) +
+                          " rounded-full px-4 py-1 self-baseline font-bold absolute top-4 right-4 text-lg"
+                        }
+                      >
+                        {product.category}
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p
+                        className={
+                          categoryclass(product.category) +
+                          " rounded-full px-4 py-1 self-baseline font-bold"
+                        }
+                      >
+                        {product.category}
+                      </p>
+                      <div className="font-bold text-4xl">{product.title}</div>
+                    </>
+                  )}
+
+                  <p className="text-blue-600 font-bold text-xl">
+                    {product.price} DA
+                  </p>
+                  {type == "list" && (
+                    <p className="text-gray-600 font-bold text-xl">
+                      {product.description}
+                    </p>
+                  )}
+
+                  <div className="flex w-full flex-grow items-end pb-4">
+                    <div
+                      className="bg-blue-600 text-white p-2 rounded-lg w-32 text-xl flex-grow text-center cursor-pointer"
+                      onClick={() => alert("add to cart")}
+                    >
+                      Modify product
+                    </div>
+                    <Svg
+                      path={trash.path}
+                      view={trash.viewBox}
+                      classlist="cursor-pointer fill-current text-red-800 w-10 h-10 p-2 rounded-lg "
+                    />
                   </div>
-                  <Svg
-                    path={trash.path}
-                    view={trash.viewBox}
-                    classlist="cursor-pointer fill-current text-red-800 w-10 h-10 p-2 rounded-lg "
-                  />
                 </div>
               </div>
             );
