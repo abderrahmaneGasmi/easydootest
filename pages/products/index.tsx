@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import {
   Product,
   category,
+  filterProducts,
   getProduct,
   searchProduct,
 } from "../../api/products";
@@ -15,7 +16,7 @@ export default function Products({ products }: { products: Product[] }) {
   const [productsrendered, setProductsrendered] = useState(products);
   const [type, setType] = useState("grid" as "grid" | "list");
   const [searchinput, setsearchinput] = useState("");
-
+  const [filter, setFilter] = useState("all" as "all" | category);
   useEffect(() => {
     if (searchinput.length < 3) {
       setProductsrendered(finalproducts.current);
@@ -23,7 +24,8 @@ export default function Products({ products }: { products: Product[] }) {
     }
     const search = setTimeout(() => {
       // No ENDPOINT FOR SEARCHING PRODUCTS
-      // searchProduct(searchinput).then(updateProducts);
+      // searchProduct(searchinput).then((data) => setProductsrendered(data));
+
       searchproducts(searchinput);
     }, 500);
     const searchproducts = (search: string) => {
@@ -35,6 +37,15 @@ export default function Products({ products }: { products: Product[] }) {
     };
     return () => clearTimeout(search);
   }, [searchinput]);
+  useEffect(() => {
+    if (filter === "all") {
+      setProductsrendered(finalproducts.current);
+      return;
+    }
+    filterProducts(filter).then((data) => {
+      setProductsrendered(data);
+    });
+  }, [filter]);
 
   const categoryclass = (category: category) => {
     switch (category) {
@@ -96,11 +107,19 @@ export default function Products({ products }: { products: Product[] }) {
             </div>
           </div>
           <div className="flex gap-2 items-center">
-            <div className="text-xl font-bold text-gray-500 p-4">sort by:</div>
-            <select className="bg-gray-200 rounded-lg text-gray-500 p-2 min-w-96 text-xl">
-              <option>price</option>
-              <option>category</option>
-              <option>rating</option>
+            <div className="text-xl font-bold text-gray-500 p-4">
+              Filter by:
+            </div>
+            <select
+              className="bg-gray-200 rounded-lg text-gray-500 p-2 min-w-96 text-xl"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value as category)}
+            >
+              <option value="all">All</option>
+              <option value="electronics">Electronics</option>
+              <option value="jewelery">Jewelery</option>
+              <option value="men's clothing">{`men's clothing`}</option>
+              <option value="women's clothing">{`women's clothing`}</option>
             </select>
           </div>
         </div>

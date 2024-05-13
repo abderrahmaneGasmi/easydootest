@@ -13,12 +13,24 @@ export interface Product {
 }
 
 export function getProduct() {
-  return fetch(process.env.api + "/products")
+  let endpoint = process.env.api || "https://fakestoreapi.com";
+  return fetch(endpoint + "/products")
     .then((res) => res.json())
     .then((data) => data as Product[]);
 }
 export function searchProduct(search: string) {
-  return fetch(process.env.api + "/products?title=" + search)
+  return fetch(
+    process.env.api || "https://fakestoreapi.com" + "/products?title=" + search
+  )
+    .then((res) => res.json())
+    .then((data) => data as Product[]);
+}
+export function filterProducts(category: category) {
+  console.log(process.env.api);
+  return fetch(
+    process.env.api ||
+      "https://fakestoreapi.com" + "/products/category/" + category
+  )
     .then((res) => res.json())
     .then((data) => data as Product[]);
 }
