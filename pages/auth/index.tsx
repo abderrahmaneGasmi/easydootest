@@ -4,7 +4,19 @@ export default function Home() {
   // if not, redirect to login page
 
   return (
-    <div className="w-full h-screen flex flex-col justify-center items-center gap-4">
+    <div
+      className="w-full h-screen flex flex-col justify-center items-center gap-4"
+      style={{
+        backgroundImage: `linear-gradient(
+    to right top,
+    #d2e0f5,
+    #ccdff2,
+    #c7ddef,
+    #c2dceb,
+    #bedae7
+  )`,
+      }}
+    >
       {/* <div className="text-6xl font-bold text-indigo-600">Logo</div> */}
       <div className="w-3/12  bg-white flex flex-col items-center gap-4 px-20 py-12 shadow-xl rounded-md">
         <div className="text-2xl font-bold text-gray-800 py-12">
