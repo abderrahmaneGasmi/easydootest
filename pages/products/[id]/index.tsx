@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { JSXElementConstructor, ReactElement, useState } from "react";
 import { useRouter } from "next/router";
 import {
   Product,
@@ -13,7 +13,9 @@ import Svg from "../../../components/Svg";
 import { star } from "../../../utils/Svgs";
 import ProductItem from "../../../components/products/Product";
 import Link from "next/link";
-export default function ProductPage({ product }: { product: Product }) {
+import PrimaryLayout from "../../../components/layouts/PrimaryLayout";
+
+function ProductPage({ product }: { product: Product }) {
   const router = useRouter();
   const [related, setRelated] = useState([] as Product[]);
   React.useEffect(() => {
@@ -22,7 +24,6 @@ export default function ProductPage({ product }: { product: Product }) {
       setRelated(data);
     });
   }, [product]);
-  // If the router is not ready yet (i.e., getServerSideProps is not returned)
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
@@ -134,6 +135,12 @@ export default function ProductPage({ product }: { product: Product }) {
     </div>
   );
 }
+export default ProductPage;
+ProductPage.getLayout = (
+  page: ReactElement<any, string | JSXElementConstructor<any>>
+) => {
+  return <PrimaryLayout>{page}</PrimaryLayout>;
+};
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   if (!context.params) return { props: { product: {} } };
   console.log(context.params.id);

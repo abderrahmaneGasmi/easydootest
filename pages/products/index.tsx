@@ -1,5 +1,10 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, {
+  JSXElementConstructor,
+  ReactElement,
+  useEffect,
+  useState,
+} from "react";
 import {
   Product,
   addproduct,
@@ -24,7 +29,8 @@ import {
   trash,
 } from "../../utils/Svgs";
 import Link from "next/link";
-export default function Products({ products }: { products: Product[] }) {
+import PrimaryLayout from "../../components/layouts/PrimaryLayout";
+function Products({ products }: { products: Product[] }) {
   const finalproducts = React.useRef(products);
   const [productsrendered, setProductsrendered] = useState(products);
   const [type, setType] = useState("grid" as "grid" | "list");
@@ -160,7 +166,7 @@ export default function Products({ products }: { products: Product[] }) {
   };
   return (
     <main className={styles.grid}>
-      <div className="flex flex-col gap-4 p-4 relative">
+      <div className="flex flex-col gap-4 relative">
         <div className="flex bg-gray-100 w-full justify-between items-center rounded-lg px-4 py-2">
           <div className="flex gap-2 items-center pr-4">
             <Svg
@@ -526,6 +532,12 @@ export default function Products({ products }: { products: Product[] }) {
     </main>
   );
 }
+export default Products;
+Products.getLayout = (
+  page: ReactElement<any, string | JSXElementConstructor<any>>
+) => {
+  return <PrimaryLayout>{page}</PrimaryLayout>;
+};
 export async function getStaticProps() {
   const products = await getProduct({});
   return {
