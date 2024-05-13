@@ -3,7 +3,7 @@ import { Product, category, getProduct } from "../../api/products";
 import Image from "next/image";
 import styles from "./product.module.css";
 import Svg from "../../components/Svg";
-import { gridicon, listicon, search } from "../../utils/Svgs";
+import { add, gridicon, listicon, search, trash } from "../../utils/Svgs";
 export default function Products({ products }: { products: Product[] }) {
   const categoryclass = (category: category) => {
     switch (category) {
@@ -21,8 +21,8 @@ export default function Products({ products }: { products: Product[] }) {
   };
   return (
     <main className={styles.grid}>
-      <div className="flex flex-col gap-4 p-4">
-        <div className="flex bg-gray-100 w-full justify-between items-center rounded-lg">
+      <div className="flex flex-col gap-4 p-4 relative">
+        <div className="flex bg-gray-100 w-full justify-between items-center rounded-lg px-4 py-2">
           <div className="flex gap-2 items-center pr-4">
             <Svg
               path={gridicon.path}
@@ -59,7 +59,7 @@ export default function Products({ products }: { products: Product[] }) {
             </select>
           </div>
         </div>
-        <div className="flex flex-wrap gap-4">
+        <div className={styles.products}>
           {products.map((product) => {
             return (
               <div
@@ -69,7 +69,6 @@ export default function Products({ products }: { products: Product[] }) {
                   " " +
                   styles.product
                 }
-                style={{ width: "250px" }}
               >
                 <Image
                   src={product.image}
@@ -93,10 +92,28 @@ export default function Products({ products }: { products: Product[] }) {
                 >
                   {product.category}
                 </p>
+                <div className="flex w-full flex-grow items-end pb-4">
+                  <div
+                    className="bg-blue-600 text-white p-2 rounded-lg w-32 text-xl flex-grow text-center cursor-pointer"
+                    onClick={() => alert("add to cart")}
+                  >
+                    Modify product
+                  </div>
+                  <Svg
+                    path={trash.path}
+                    view={trash.viewBox}
+                    classlist="cursor-pointer fill-current text-red-800 w-10 h-10 p-2 rounded-lg "
+                  />
+                </div>
               </div>
             );
           })}
         </div>
+        <Svg
+          path={add.path}
+          view={add.viewBox}
+          classlist="cursor-pointer fill-current text-white fixed bottom-4 right-4 w-16 h-16 bg-blue-600 p-4 rounded-full hover:bg-blue-800"
+        />
       </div>
     </main>
   );
