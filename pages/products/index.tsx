@@ -11,7 +11,7 @@ import {
   searchProduct,
 } from "../../api/products";
 import Image from "next/image";
-import styles from "./product.module.css";
+import styles from "../../components/products/product.module.css";
 import Svg from "../../components/Svg";
 import {
   add,
@@ -42,17 +42,10 @@ export default function Products({ products }: { products: Product[] }) {
     id: 0,
   } as Partial<Product> & { show: boolean; type: "add" | "edit" });
   useEffect(() => {
-    if (searchinput.length < 3) {
-      setProductsrendered(finalproducts.current);
-      setLoading(false);
-
-      return;
-    }
     setLoading(true);
     const search = setTimeout(() => {
       // No ENDPOINT FOR SEARCHING PRODUCTS
       // searchProduct(searchinput).then((data) => setProductsrendered(data));
-
       searchproducts(searchinput);
     }, 1000);
     const searchproducts = (search: string) => {
@@ -159,6 +152,9 @@ export default function Products({ products }: { products: Product[] }) {
       finalproducts.current = finalproducts.current.filter(
         (product) => product.id !== id
       );
+      setTimeout(() => {
+        setRequestloading(false);
+      }, 500);
     });
   };
   return (
@@ -526,7 +522,7 @@ export default function Products({ products }: { products: Product[] }) {
   );
 }
 export async function getStaticProps() {
-  const products = await getProduct();
+  const products = await getProduct({});
   return {
     props: {
       products,

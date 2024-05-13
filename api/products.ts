@@ -10,11 +10,15 @@ export interface Product {
   category: category;
   description: string;
   image: string;
+  rating: {
+    rate: number;
+    count: number;
+  };
 }
 
-export function getProduct() {
+export function getProduct({ limit }: { limit?: number }) {
   let endpoint = process.env.api || "https://fakestoreapi.com";
-  return fetch(endpoint + "/products")
+  return fetch(endpoint + "/products" + (limit ? "?limit=" + limit : ""))
     .then((res) => res.json())
     .then((data) => data as Product[]);
 }
@@ -69,4 +73,11 @@ export function deleteproduct(id: number) {
   )
     .then((res) => res.json())
     .then((data) => console.log(data));
+}
+export function getProductById(id: string) {
+  let endpoint = process.env.api || "https://fakestoreapi.com";
+
+  return fetch(endpoint + "/products/" + id)
+    .then((res) => res.json())
+    .then((json) => json as Product);
 }
