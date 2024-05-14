@@ -58,6 +58,7 @@ export default function AuthProvider({ children }: childrenType) {
     }
     return false;
   };
+
   return (
     <AuthContext.Provider
       value={{

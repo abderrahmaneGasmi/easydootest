@@ -22,6 +22,10 @@ function ProductPage() {
   const [related, setRelated] = useState([] as Product[]);
   const [isLoading, setIsLoading] = useState(true);
   const [product, setProduct] = useState({} as Product);
+  const checkobjempty = (obj: any) => {
+    if (!obj) return true;
+    return Object.keys(obj).length === 0;
+  };
   React.useEffect(() => {
     // if (!product.id) return;
     if (!router.query.id) return;
@@ -34,7 +38,7 @@ function ProductPage() {
     });
   }, [router.query.id]);
   React.useEffect(() => {
-    if (!product.id) return;
+    if (checkobjempty(product)) return;
     filterProducts(product.category).then((data) => {
       setRelated(data);
     });
@@ -58,7 +62,7 @@ function ProductPage() {
     }
   };
   if (isLoading) return <LoadingProduct />;
-  if (!product.id && !isLoading)
+  if (checkobjempty(product) && !isLoading)
     return (
       <div className="flex flex-col gap-12 justify-center items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <Image
