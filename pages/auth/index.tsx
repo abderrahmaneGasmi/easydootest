@@ -5,7 +5,11 @@ import { useAuth } from "../../hooks/useAuth";
 import { useRouter } from "next/router";
 import { ToastContextType } from "../../context/toast/toast";
 import { useToast } from "../../hooks/useToast";
+import Svg from "../../components/Svg";
+import { refresh } from "../../utils/Svgs";
 export default function Home() {
+  const [requestloading, setRequestloading] = useState(false);
+
   const { toggleToast }: ToastContextType = useToast();
 
   // check if localStorage auth token exists
@@ -17,15 +21,26 @@ export default function Home() {
   const { checkAuth, login }: AuthContextType = useAuth();
   const router = useRouter();
   useEffect(() => {
-    toggleToast("Welcome to the login page", "success");
     if (checkAuth()) {
       router.push("/");
     } else {
     }
   }, []);
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    if (requestloading) return;
     if (fromdata.username && fromdata.password) {
-      login(fromdata);
+      setRequestloading(true);
+      login(fromdata).then((res) => {
+        console.log("first");
+        setRequestloading(false);
+      });
+    } else {
+      if (!fromdata.username) {
+        return toggleToast("Username is required", "error");
+      }
+      if (!fromdata.password) {
+        return toggleToast("Password is required", "error");
+      }
     }
   };
   return (
@@ -73,10 +88,18 @@ export default function Home() {
             value={fromdata.password}
           />
           <button
-            className="w-full bg-indigo-600 text-white rounded-md text-2xl font-bold py-4"
+            className="w-full bg-indigo-600 text-white rounded-md text-2xl font-bold py-4 flex justify-center items-center"
             onClick={handleLogin}
           >
-            Login
+            {requestloading ? (
+              <Svg
+                path={refresh.path}
+                view={refresh.viewBox}
+                classlist="w-8 h-8 animate-spin text-white fill-current "
+              />
+            ) : (
+              "Login"
+            )}
           </button>
           <br />
           <br />

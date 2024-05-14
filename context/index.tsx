@@ -8,9 +8,10 @@ interface childrenType {
 export default function ContextProviders({ children }: childrenType) {
   return (
     <>
-      <AuthProvider>
-        <ToastProvider>{children}</ToastProvider>
-      </AuthProvider>
+      <ToastProvider>
+        {" "}
+        <AuthProvider>{children}</AuthProvider>
+      </ToastProvider>
     </>
   );
 }

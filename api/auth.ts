@@ -1,3 +1,13 @@
+export async function readStream(stream: ReadableStream<Uint8Array>) {
+  const reader = stream.getReader();
+  let result = "";
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    result += new TextDecoder().decode(value);
+  }
+  return result;
+}
 export async function loginApi(userData: {
   username: string;
   password: string;
@@ -10,6 +20,7 @@ export async function loginApi(userData: {
     },
     body: JSON.stringify(userData),
   })
-    .then((res) => res.json())
-    .then((data) => data);
+    .then((res) => res.body)
+    .then((body) => readStream(body as ReadableStream<Uint8Array>));
+  // .then((data) => data)
 }
