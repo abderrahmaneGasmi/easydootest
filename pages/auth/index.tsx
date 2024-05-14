@@ -3,7 +3,11 @@ import { useEffect, useState } from "react";
 import { AuthContextType } from "../../context/authProvider";
 import { useAuth } from "../../hooks/useAuth";
 import { useRouter } from "next/router";
+import { ToastContextType } from "../../context/toast/toast";
+import { useToast } from "../../hooks/useToast";
 export default function Home() {
+  const { toggleToast }: ToastContextType = useToast();
+
   // check if localStorage auth token exists
   // if not, redirect to login page
   const [fromdata, setFromdata] = useState({
@@ -13,6 +17,7 @@ export default function Home() {
   const { checkAuth, login }: AuthContextType = useAuth();
   const router = useRouter();
   useEffect(() => {
+    toggleToast("Welcome to the login page", "success");
     if (checkAuth()) {
       router.push("/");
     } else {

@@ -1,5 +1,6 @@
 import React from "react";
 import AuthProvider from "./authProvider";
+import ToastProvider from "./toast/toast";
 
 interface childrenType {
   children: React.ReactNode;
@@ -7,7 +8,9 @@ interface childrenType {
 export default function ContextProviders({ children }: childrenType) {
   return (
     <>
-      <AuthProvider>{children}</AuthProvider>
+      <AuthProvider>
+        <ToastProvider>{children}</ToastProvider>
+      </AuthProvider>
     </>
   );
 }

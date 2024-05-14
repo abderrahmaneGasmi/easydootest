@@ -1,4 +1,4 @@
-import React, { MouseEventHandler } from "react";
+import React, { MouseEventHandler, SVGProps } from "react";
 interface svgProps {
   id?: string;
   click?: MouseEventHandler;
@@ -8,6 +8,7 @@ interface svgProps {
   pathlist?: string[];
   refre?: React.RefObject<SVGSVGElement>;
   style?: React.CSSProperties;
+  props?: SVGProps<SVGSVGElement>;
 }
 
 export default function Svg(props: svgProps) {
@@ -21,6 +22,7 @@ export default function Svg(props: svgProps) {
       style={{
         ...props.style,
       }}
+      {...props.props}
     >
       <g>{props.path && <path d={props.path}></path>}</g>
     </svg>
