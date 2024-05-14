@@ -14,10 +14,26 @@ import { star } from "../../../utils/Svgs";
 import ProductItem from "../../../components/products/Product";
 import Link from "next/link";
 import PrimaryLayout from "../../../components/layouts/PrimaryLayout";
+import LoadingProduct from "./loading";
 
-function ProductPage({ product }: { product: Product }) {
+function ProductPage() {
+  // { product }: { product: Product }
   const router = useRouter();
   const [related, setRelated] = useState([] as Product[]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [product, setProduct] = useState({} as Product);
+  React.useEffect(() => {
+    // if (!product.id) return;
+    if (!router.query.id) return;
+
+    setIsLoading(true);
+    let res = getProductById(router.query.id as string);
+    res.then((data) => {
+      console.log(data);
+      setProduct(data);
+      setIsLoading(false);
+    });
+  }, []);
   React.useEffect(() => {
     if (!product.id) return;
     filterProducts(product.category).then((data) => {
@@ -42,7 +58,8 @@ function ProductPage({ product }: { product: Product }) {
         return "bg-gray-500 text-white";
     }
   };
-  if (!product.id)
+  if (isLoading) return <LoadingProduct />;
+  if (!product.id && !isLoading)
     return (
       <div className="flex flex-col gap-12 justify-center items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <Image
@@ -141,23 +158,23 @@ ProductPage.getLayout = (
 ) => {
   return <PrimaryLayout>{page}</PrimaryLayout>;
 };
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  if (!context.params) return { props: { product: {} } };
-  console.log(context.params.id);
-  const id = context.params.id as string;
-  try {
-    const product = await getProductById(id);
-    return {
-      props: {
-        product: product,
-      },
-    };
-  } catch (e) {
-    console.log(e);
-    return {
-      props: {
-        product: {},
-      },
-    };
-  }
-}
+// export async function getServerSideProps(context: GetServerSidePropsContext) {
+//   if (!context.params) return { props: { product: {} } };
+//   console.log(context.params.id);
+//   const id = context.params.id as string;
+//   try {
+//     const product = await getProductById(id);
+//     return {
+//       props: {
+//         product: product,
+//       },
+//     };
+//   } catch (e) {
+//     console.log(e);
+//     return {
+//       props: {
+//         product: {},
+//       },
+//     };
+//   }
+// }
