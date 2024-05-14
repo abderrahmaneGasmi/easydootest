@@ -51,7 +51,9 @@ export default function AuthProvider({ children }: childrenType) {
   };
   const checkAuth = () => {
     const user = cookies.get("user");
+
     if (user) {
+      setUser(user);
       return true;
     }
     return false;
