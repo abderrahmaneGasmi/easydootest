@@ -31,6 +31,8 @@ import {
 } from "../../utils/Svgs";
 import Link from "next/link";
 import PrimaryLayout from "../../components/layouts/PrimaryLayout";
+import { ToastContextType } from "../../context/toast/toast";
+import { useToast } from "../../hooks/useToast";
 function Products({ products }: { products: Product[] }) {
   const finalproducts = React.useRef(products);
   const [productsrendered, setProductsrendered] = useState(products);
@@ -38,6 +40,8 @@ function Products({ products }: { products: Product[] }) {
   const [searchinput, setsearchinput] = useState("");
   const [filter, setFilter] = useState("all" as "all" | category);
   const [loading, setLoading] = useState(true);
+  const { toggleToast }: ToastContextType = useToast();
+
   const [requestloading, setRequestloading] = useState(false);
   const [newproject, setNewproject] = useState({
     show: false,
@@ -101,7 +105,8 @@ function Products({ products }: { products: Product[] }) {
       newproject.description === "" ||
       newproject.price === 0
     ) {
-      alert("please fill all fields");
+      // alert("please fill all fields");
+      toggleToast("please fill all fields", "error");
       return;
     }
     setRequestloading(true);
@@ -114,6 +119,22 @@ function Products({ products }: { products: Product[] }) {
       title: newproject.title,
     }).then(() => {
       setTimeout(() => {
+        setProductsrendered((prev) => [
+          {
+            category: newproject.category as category,
+            description: newproject.description || "",
+            id: finalproducts.current.length + 1,
+            image: newproject.image || "/product.png",
+            price: newproject.price || 0,
+            title: newproject.title || "",
+            rating: {
+              rate: 0,
+              count: 0,
+            },
+          },
+          ...prev,
+        ]);
+        toggleToast("Product added successfully", "success");
         setNewproject({
           show: false,
           type: "add",
@@ -164,6 +185,21 @@ function Products({ products }: { products: Product[] }) {
         setRequestloading(false);
       }, 500);
     });
+  };
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0];
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setNewproject({ ...newproject, image: reader.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
   };
   return (
     <main className={styles.grid}>
@@ -369,6 +405,7 @@ function Products({ products }: { products: Product[] }) {
                         <div
                           className="bg-blue-600 text-white p-2 rounded-lg w-32 text-xl flex-grow text-center cursor-pointer"
                           onClick={() => {
+                            console.log(product);
                             setNewproject({
                               category: product.category,
                               description: product.description,
@@ -429,7 +466,11 @@ function Products({ products }: { products: Product[] }) {
         />
       </div>
       {newproject.show && (
-        <div className="fixed inset-0 z-50">
+        <div
+          className="fixed inset-0 z-50"
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+        >
           <div
             className="absolute bg-white w-2/6 rounded-lg top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col overflow-auto"
             style={{
@@ -447,17 +488,53 @@ function Products({ products }: { products: Product[] }) {
                 click={() => setNewproject({ ...newproject, show: false })}
               />
             </div>
-            <div className="flex flex-col p-4 w-full h-full flex-grow">
+            <div
+              className="flex flex-col p-4 w-full h-full flex-grow"
+              onClick={() => {
+                document.getElementById("file")?.click();
+              }}
+            >
               <div className="w-full h-full bg-gray-200 border-4 border-indigo-200 rounded-lg border-dashed flex flex-col items-center justify-center">
-                <Svg
-                  path={image.path}
-                  view={image.viewBox}
-                  classlist="w-16 h-16 fill-current text-indigo-500"
-                />
-                <p className="text-indigo-500 text-2xl font-bold">
-                  Drag & drop image or click to upload
-                </p>
+                {!newproject.image ? (
+                  <>
+                    <Svg
+                      path={image.path}
+                      view={image.viewBox}
+                      classlist="w-16 h-16 fill-current text-indigo-500"
+                    />
+                    <p className="text-indigo-500 text-2xl font-bold">
+                      Drag & drop image or click to upload
+                    </p>
+                  </>
+                ) : (
+                  <Image
+                    src={newproject.image!}
+                    alt="product image"
+                    width={300}
+                    height={300}
+                    className="rounded-lg object-cover"
+                  />
+                )}
               </div>
+              <input
+                type="file"
+                className="hidden"
+                id="file"
+                accept="image/png, image/jpeg , image/jpg "
+                onChange={(e) => {
+                  const file = e.target.files![0];
+                  if (file && file.type.startsWith("image/")) {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                      setNewproject({
+                        ...newproject,
+                        image: reader.result as string,
+                      });
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }}
+              />
             </div>
             <div className="flex h-full flex-col mx-4 mr-6 gap-2">
               <div className="text-2xl font-bold text-gray-800 p-2">Title</div>
