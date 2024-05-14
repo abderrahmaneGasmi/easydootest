@@ -167,6 +167,7 @@ function Products({ products }: { products: Product[] }) {
           description: "",
           image: "",
         });
+        toggleToast("Product edited successfully", "success");
         setRequestloading(false);
       }, 500);
     });
@@ -183,6 +184,7 @@ function Products({ products }: { products: Product[] }) {
       );
       setTimeout(() => {
         setRequestloading(false);
+        toggleToast("Product deleted successfully", "success");
       }, 500);
     });
   };

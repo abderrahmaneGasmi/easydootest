@@ -11,6 +11,7 @@ export interface AuthContextType {
   login: (userData: userData) => Promise<void>;
   logout: () => void;
   checkAuth: () => boolean;
+  userInfo: userData | null;
 }
 type userData = {
   username: string;
@@ -61,6 +62,7 @@ export default function AuthProvider({ children }: childrenType) {
         login,
         logout,
         checkAuth,
+        userInfo: user,
       }}
     >
       {children}

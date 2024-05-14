@@ -29,11 +29,10 @@ function ProductPage() {
     setIsLoading(true);
     let res = getProductById(router.query.id as string);
     res.then((data) => {
-      console.log(data);
-      setProduct(data);
+      setProduct(data as Product);
       setIsLoading(false);
     });
-  }, []);
+  }, [router.query.id]);
   React.useEffect(() => {
     if (!product.id) return;
     filterProducts(product.category).then((data) => {

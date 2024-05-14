@@ -79,5 +79,6 @@ export async function getProductById(id: string) {
 
   return fetch(endpoint + "/products/" + id)
     .then((res) => res.json())
-    .then((json) => json as Product);
+    .then((json) => json as Product)
+    .catch((err) => console.log(err));
 }
