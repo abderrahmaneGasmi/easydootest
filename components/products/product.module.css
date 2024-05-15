@@ -5,7 +5,7 @@
 }
 .products {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(25rem, 1fr));
   gap: 1rem;
 }
 .productslist {
@@ -48,4 +48,12 @@
 .productimageskeleton {
   height: 75rem;
   width: 100%;
+}
+.searchbar {
+  justify-content: center;
+  @media (max-width: 768px) {
+    justify-content: flex-start;
+    height: 4rem;
+    align-items: center;
+  }
 }

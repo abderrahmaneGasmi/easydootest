@@ -206,7 +206,7 @@ function Products({ products }: { products: Product[] }) {
   return (
     <main className={styles.grid}>
       <div className="flex flex-col gap-4 relative">
-        <div className="flex bg-gray-100 w-full justify-between items-center rounded-lg px-4 py-2">
+        <div className="flex bg-gray-100 w-full justify-start flex-wrap items-center rounded-lg px-4 py-2">
           <div className="flex gap-2 items-center pr-4">
             <Svg
               path={gridicon.path}
@@ -243,9 +243,9 @@ function Products({ products }: { products: Product[] }) {
               }}
             />
           </div>{" "}
-          <div className="flex">
+          <div className={"flex flex-grow " + styles.searchbar}>
             {" "}
-            <div className="flex bg-gray-200 rounded-lg text-gray-500 p-2 items-center w-96">
+            <div className="flex bg-gray-200 rounded-lg text-gray-500 p-2 items-center w-full max-w-96">
               <input
                 type="text"
                 className="outline-none bg-transparent w-full text-xl"
@@ -363,7 +363,7 @@ function Products({ products }: { products: Product[] }) {
                     <div className="flex flex-col flex-grow gap-2 h-full">
                       {type == "grid" ? (
                         <>
-                          <div className="font-bold text-2xl">
+                          <div className="font-bold text-2xl min-h-20">
                             <Link href={"/products/" + product.id}>
                               {product.title.slice(0, 60) +
                                 (product.title.length > 60 ? "..." : "")}
@@ -394,7 +394,7 @@ function Products({ products }: { products: Product[] }) {
                         </>
                       )}
 
-                      <p className="text-blue-600 font-bold text-xl">
+                      <p className="text-gray-700 font-bold text-3xl ">
                         {product.price} DA
                       </p>
                       {type == "list" && (

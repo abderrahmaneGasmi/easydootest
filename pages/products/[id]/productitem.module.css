@@ -1,0 +1,29 @@
+.grid {
+  grid-template-columns: 1fr 3fr;
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+}
+.image {
+  width: 100%;
+  height: 100%;
+  @media (max-width: 768px) {
+    height: 30rem;
+    width: 30rem;
+    object-position: top;
+  }
+}
+.group {
+  display: flex;
+  flex-direction: column;
+  @media (max-width: 768px) {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(25rem, 1fr));
+  gap: 1rem;
+}

@@ -15,6 +15,7 @@ import ProductItem from "../../../components/products/Product";
 import Link from "next/link";
 import PrimaryLayout from "../../../components/layouts/PrimaryLayout";
 import LoadingProduct from "./loading";
+import styles from "./productitem.module.css";
 
 function ProductPage() {
   // { product }: { product: Product }
@@ -90,19 +91,14 @@ function ProductPage() {
           Product {router.query.id}
         </div>
       </div>
-      <div
-        className="grid gap-12 mt-12"
-        style={{
-          gridTemplateColumns: "1fr 3fr",
-        }}
-      >
+      <div className={"grid gap-12 mt-12 " + styles.grid}>
         <div>
           <Image
             src={product.image}
             alt={product.title}
             width={300}
             height={300}
-            className="w-full h-full object-cover"
+            className={" object-cover " + styles.image}
           />
         </div>
         <div className="flex flex-col gap-4 items-start">
@@ -128,26 +124,25 @@ function ProductPage() {
               ({product.rating.count})
             </div>
           </div>
-          <div
-            className={`p-2 rounded-full text-xl font-bold px-6 ${categoryclass(
-              product.category
-            )} text-center`}
-          >
-            {product.category}
+          <div className={"gap-4 " + styles.group}>
+            <div
+              className={`p-2 rounded-full text-xl font-bold px-6 ${categoryclass(
+                product.category
+              )} text-center`}
+            >
+              {product.category}
+            </div>
+            <p className="text-3xl font-bold bg-gray-200 p-2 rounded-md text-gray-700">
+              {product.price}DA
+            </p>
           </div>
-          <p className="text-3xl font-bold bg-gray-200 p-2 rounded-md text-gray-700">
-            {product.price}DA
-          </p>
           <p className="text-lg">{product.description}</p>
         </div>
       </div>
       <div className="text-4xl font-bold text-gray-700 mt-12">
         Related Products
       </div>
-      <div
-        className="grid gap-4 mt-4"
-        style={{ gridTemplateColumns: "1fr 1fr 1fr 1fr" }}
-      >
+      <div className={"mt-4 " + styles.products}>
         {related.map((product) => (
           <ProductItem product={product} key={product.id} />
         ))}
