@@ -33,6 +33,9 @@ import Link from "next/link";
 import PrimaryLayout from "../../components/layouts/PrimaryLayout";
 import { ToastContextType } from "../../context/toast/toast";
 import { useToast } from "../../hooks/useToast";
+import { Metadata } from "next";
+import Head from "next/head";
+
 function Products({ products }: { products: Product[] }) {
   const finalproducts = React.useRef(products);
   const [productsrendered, setProductsrendered] = useState(products);
@@ -205,6 +208,9 @@ function Products({ products }: { products: Product[] }) {
   };
   return (
     <main className={styles.grid}>
+      <Head>
+        <title>EasyDoo-Test | Products list</title>
+      </Head>
       <div className="flex flex-col gap-4 relative">
         <div className="flex bg-gray-100 w-full justify-start flex-wrap items-center rounded-lg px-4 py-2">
           <div className="flex gap-2 items-center pr-4">

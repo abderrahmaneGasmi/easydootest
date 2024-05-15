@@ -16,6 +16,7 @@ import Link from "next/link";
 import PrimaryLayout from "../../../components/layouts/PrimaryLayout";
 import LoadingProduct from "./loading";
 import styles from "./productitem.module.css";
+import Head from "next/head";
 
 function ProductPage() {
   // { product }: { product: Product }
@@ -66,6 +67,9 @@ function ProductPage() {
   if (checkobjempty(product) && !isLoading)
     return (
       <div className="flex flex-col gap-12 justify-center items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <Head>
+          <title>EasyDoo-Test | Prodcut Not Found</title>
+        </Head>
         <Image
           src="/404.png"
           alt="no products found"
@@ -82,6 +86,9 @@ function ProductPage() {
     );
   return (
     <div className="flex flex-col p-4 ">
+      <Head>
+        <title>EasyDoo-Test | Product N {product.id}</title>
+      </Head>
       <div className="flex flex-row items-center gap-x-2">
         <div className="text-2xl text-gray-400 font-bold">
           <Link href="/products">Home</Link>
