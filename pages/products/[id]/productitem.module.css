@@ -2,7 +2,7 @@
   grid-template-columns: 1fr 3fr;
   @media (max-width: 768px) {
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
 }
 .image {
@@ -12,18 +12,38 @@
     height: 30rem;
     width: 30rem;
     object-position: top;
+    align-self: center;
   }
 }
 .group {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   @media (max-width: 768px) {
-    flex-direction: row;
-    align-items: center;
+    flex-direction: column;
   }
 }
 .products {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(25rem, 1fr));
   gap: 1rem;
+}
+.title {
+  display: none;
+  @media (max-width: 768px) {
+    display: flex;
+  }
+}
+.secondtitle {
+  display: flex;
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+.flex {
+  display: flex;
+  flex-direction: column;
+  @media (max-width: 768px) {
+    flex-direction: column-reverse;
+  }
 }

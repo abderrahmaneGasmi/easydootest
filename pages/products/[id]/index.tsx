@@ -92,7 +92,7 @@ function ProductPage() {
         </div>
       </div>
       <div className={"grid gap-12 mt-12 " + styles.grid}>
-        <div>
+        <div className={styles.flex}>
           <Image
             src={product.image}
             alt={product.title}
@@ -100,17 +100,16 @@ function ProductPage() {
             height={300}
             className={" object-cover " + styles.image}
           />
-        </div>
-        <div className="flex flex-col gap-4 items-start">
-          <div className="flex flex-row items-center gap-x-2">
+          <div
+            className={
+              "flex flex-row items-center gap-x-2" + " " + styles.title
+            }
+          >
             {" "}
-            <h1
-              className="text-5xl font-bold text-gray-700
-          "
-            >
+            <h1 className={"text-5xl font-bold text-gray-700"}>
               {product.title}
             </h1>
-            <div className="relative">
+            <div className="relative w-fit">
               <Svg
                 path={star.path}
                 view={star.viewBox}
@@ -124,19 +123,46 @@ function ProductPage() {
               ({product.rating.count})
             </div>
           </div>
-          <div className={"gap-4 " + styles.group}>
-            <div
-              className={`p-2 rounded-full text-xl font-bold px-6 ${categoryclass(
-                product.category
-              )} text-center`}
-            >
-              {product.category}
+        </div>
+        <div className="flex flex-col gap-4 items-start">
+          <div
+            className={
+              "flex flex-row items-center gap-x-2" + " " + styles.secondtitle
+            }
+          >
+            {" "}
+            <h1 className={"text-5xl font-bold text-gray-700"}>
+              {product.title}
+            </h1>
+            <div className="relative w-fit">
+              <Svg
+                path={star.path}
+                view={star.viewBox}
+                classlist="w-14 h-14 text-yellow-500 fill-current"
+              />
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-md font-bold z-50 text-white">
+                {product.rating.rate}
+              </div>
             </div>
-            <p className="text-3xl font-bold bg-gray-200 p-2 rounded-md text-gray-700">
-              {product.price}DA
-            </p>
+            <div className="text-md font-bold text-gray-500">
+              ({product.rating.count})
+            </div>
           </div>
-          <p className="text-lg">{product.description}</p>
+
+          <div
+            className={`p-2 rounded-full text-xl font-bold px-6 ${categoryclass(
+              product.category
+            )} text-center`}
+          >
+            {product.category}
+          </div>
+
+          <div className={"gap-4 " + styles.group}>
+            <p className="text-xl">{product.description}</p>{" "}
+            <p className="text-4xl font-bold bg-gray-200 py-2 px-8 rounded-md text-gray-700">
+              {product.price}DA
+            </p>{" "}
+          </div>
         </div>
       </div>
       <div className="text-4xl font-bold text-gray-700 mt-12">
