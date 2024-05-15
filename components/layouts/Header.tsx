@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Svg from "../Svg";
-import { user } from "../../utils/Svgs";
+import { logouticon, user } from "../../utils/Svgs";
 import { AuthContextType } from "../../context/authProvider";
 import { useAuth } from "../../hooks/useAuth";
 import { useRouter } from "next/router";
@@ -55,11 +55,17 @@ export default function Header() {
             </div>
           </div>
           {dropdown && (
-            <div className="absolute right-0 top-100 left-0 z-50 dropdown">
-              <div className="bg-white p-2 rounded-md shadow-md hover:bg-gray-100 cursor-pointer">
-                <div className="flex flex-col gap-2">
+            <div className="absolute right-0 top-100 left-0 z-50 dropdown ">
+              <div className="bg-white p-4 rounded-md shadow-md hover:bg-gray-100 cursor-pointer">
+                <div className="flex gap-2">
+                  {" "}
+                  <Svg
+                    path={logouticon.path}
+                    view={logouticon.viewBox}
+                    classlist="w-8 h-8 text-gray-700 fill-current dropdown"
+                  />
                   <div
-                    className="text-2xl font-bold text-gray-700 dropdown"
+                    className="text-2xl font-semibold text-gray-700 dropdown"
                     onClick={() => {
                       logout();
                       setDropdown(false);

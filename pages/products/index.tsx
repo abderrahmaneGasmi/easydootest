@@ -496,7 +496,7 @@ function Products({ products }: { products: Product[] }) {
                 document.getElementById("file")?.click();
               }}
             >
-              <div className="w-full h-full bg-gray-200 border-4 border-indigo-200 rounded-lg border-dashed flex flex-col items-center justify-center">
+              <div className="w-full h-full bg-gray-200 border-4 border-indigo-200 rounded-lg border-dashed flex flex-col items-center justify-center overflow-hidden">
                 {!newproject.image ? (
                   <>
                     <Svg
